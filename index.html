@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smile Spark - The 20-Second Positivity Challenge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0B0016;
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .challenge-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, #FF00CC, #00FFFF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(255, 0, 204, 0.5);
+        }
+
+        .vibe-line {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 400;
+            margin-bottom: 40px;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .card-container {
+            width: 400px;
+            height: 500px;
+            perspective: 1000px;
+            position: relative;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform 0.8s;
+            cursor: pointer;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(11, 0, 22, 0.9), rgba(30, 0, 50, 0.9));
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .card-face::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 14px;
+            padding: 2px;
+            background: linear-gradient(135deg, #FF00CC, #00FFFF);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            z-index: -1;
+        }
+
+        .card-front {
+            z-index: 2;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            position: relative;
+        }
+
+        .card-back.pulsing {
+            animation: backgroundPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes backgroundPulse {
+            0%, 100% {
+                background: linear-gradient(135deg, rgba(11, 0, 22, 0.9), rgba(30, 0, 50, 0.9));
+            }
+            50% {
+                background: linear-gradient(135deg, rgba(20, 0, 40, 0.95), rgba(40, 0, 70, 0.95));
+            }
+        }
+
+        .card-content {
+            text-align: center;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .challenge-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #FF00CC, #00FFFF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .challenge-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .start-button {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(90deg, #FF00CC, #00FFFF);
+            color: #0B0016;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .start-button:hover {
+            box-shadow: 0 0 20px rgba(255, 0, 204, 0.7), 0 0 30px rgba(0, 255, 255, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .timer-container {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .timer-ring {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .timer-ring-progress {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: #00FFFF;
+            transform: rotate(-90deg);
+            transition: stroke-dasharray 1s linear;
+        }
+
+        .timer-text {
+            position: absolute;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .smile-prompt {
+            position: absolute;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            bottom: 60px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .completion-message {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-align: center;
+            margin-top: 20px;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+            background: linear-gradient(90deg, #FF00CC, #00FFFF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .completion-message.show {
+            opacity: 1;
+        }
+
+        .restart-button {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(90deg, #FF00CC, #00FFFF);
+            color: #0B0016;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 30px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .restart-button.show {
+            opacity: 1;
+        }
+
+        .restart-button:hover {
+            box-shadow: 0 0 20px rgba(255, 0, 204, 0.7), 0 0 30px rgba(0, 255, 255, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .footer-text {
+            position: absolute;
+            bottom: 20px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 300;
+            opacity: 0.6;
+            font-style: italic;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #00FFFF;
+            border-radius: 50%;
+            opacity: 0;
+            animation: sparkle 3s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 440px) {
+            .card-container {
+                width: 100%;
+                max-width: 400px;
+            }
+            
+            .challenge-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="challenge-title">Smile Spark</h1>
+    <p class="vibe-line">A smile's chemical magic lasts longer than your scroll.</p>
+    
+    <div class="card-container">
+        <div class="card" id="smileCard">
+            <!-- Front of card -->
+            <div class="card-face card-front">
+                <div class="card-content">
+                    <h2 class="challenge-name">Smile Spark</h2>
+                    <p class="challenge-description">Find one reason to smile right now.</p>
+                    <button class="start-button" id="startButton">Start Challenge</button>
+                </div>
+            </div>
+            
+            <!-- Back of card -->
+            <div class="card-face card-back" id="cardBack">
+                <div class="card-content">
+                    <div class="timer-container">
+                        <div class="timer-ring"></div>
+                        <svg class="timer-ring-progress" width="250" height="250">
+                            <circle cx="125" cy="125" r="123" fill="none" stroke="url(#gradient)" stroke-width="2" 
+                                    stroke-dasharray="773" stroke-dashoffset="773" id="progressCircle"></circle>
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#FF00CC" />
+                                    <stop offset="100%" stop-color="#00FFFF" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="timer-text" id="timerText">20</div>
+                    </div>
+                    <div class="smile-prompt" id="smilePrompt">Let that smile shine...</div>
+                    <div class="completion-message" id="completionMessage">Dopamine delivered. Mood upgraded.</div>
+                    <button class="restart-button" id="restartButton">Spark Again</button>
+                    <p class="footer-text">Tiny actions, big chemistry.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const card = document.getElementById('smileCard');
+        const cardBack = document.getElementById('cardBack');
+        const startButton = document.getElementById('startButton');
+        const restartButton = document.getElementById('restartButton');
+        const timerText = document.getElementById('timerText');
+        const smilePrompt = document.getElementById('smilePrompt');
+        const completionMessage = document.getElementById('completionMessage');
+        const progressCircle = document.getElementById('progressCircle');
+        
+        let countdown;
+        let timeLeft = 20;
+        let isRunning = false;
+        
+        // Create sparkle effects
+        function createSparkles() {
+            for (let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = Math.random() * 3 + 's';
+                cardBack.appendChild(sparkle);
+            }
+        }
+        
+        createSparkles();
+        
+        // Flip card when start button is clicked
+        startButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            card.classList.add('flipped');
+            startChallenge();
+        });
+        
+        // Prevent card flip when clicking on the back of the card
+        document.querySelector('.card-back').addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        // Restart challenge
+        restartButton.addEventListener('click', function() {
+            resetChallenge();
+            startChallenge();
+        });
+        
+        function startChallenge() {
+            if (isRunning) return;
+            isRunning = true;
+            
+            // Reset UI elements
+            timeLeft = 20;
+            timerText.textContent = timeLeft;
+            cardBack.classList.add('pulsing');
+            completionMessage.classList.remove('show');
+            restartButton.classList.remove('show');
+            smilePrompt.style.opacity = '1';
+            
+            // Start countdown
+            countdown = setInterval(() => {
+                timeLeft--;
+                timerText.textContent = timeLeft;
+                
+                // Update progress circle
+                const offset = 773 - (773 * (20 - timeLeft) / 20);
+                progressCircle.style.strokeDashoffset = offset;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    isRunning = false;
+                    
+                    // Show completion message
+                    setTimeout(() => {
+                        cardBack.classList.remove('pulsing');
+                        timerText.style.opacity = '0';
+                        smilePrompt.style.opacity = '0';
+                        completionMessage.classList.add('show');
+                        restartButton.classList.add('show');
+                    }, 500);
+                }
+            }, 1000);
+        }
+        
+        function resetChallenge() {
+            clearInterval(countdown);
+            isRunning = false;
+            timeLeft = 20;
+            
+            // Reset UI elements
+            timerText.textContent = timeLeft;
+            timerText.style.opacity = '1';
+            smilePrompt.style.opacity = '1';
+            cardBack.classList.remove('pulsing');
+            completionMessage.classList.remove('show');
+            restartButton.classList.remove('show');
+            
+            // Reset progress circle
+            progressCircle.style.strokeDashoffset = 773;
+        }
+    </script>
+</body>
+</html>
